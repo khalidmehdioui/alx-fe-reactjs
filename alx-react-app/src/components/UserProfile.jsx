@@ -1,11 +1,10 @@
-function WelcomeMessage() {
+const UserProfile = (props) => {
   return (
-      <div>
-          <h1>Hello everyone, I am learning React at ALX!</h1>
-          <p>This is a simple JSX component.</p>
-          <p>I am learning about JSX!</p>
-      </div>
+    <div>
+      <h2>{props.name}</h2>
+      <p>Age: {props.age}</p>
+      <p>Bio: {props.bio}</p>
+    </div>
   );
-}
-
-export default WelcomeMessage;
+};
+export default UserProfile;
