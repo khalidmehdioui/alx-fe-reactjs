@@ -1,6 +1,7 @@
 import React from 'react';
 import SearchBar from './components/SearchBar';
 import RecipeList from './components/RecipeList';
+import EditRecipeForm from './components/EditRecipeForm';
 import FavoritesList from './components/FavoritesList';
 import RecommendationsList from './components/RecommendationsList';
 import { Link, Route, Routes, Router } from 'react-router-dom';
@@ -21,6 +22,8 @@ const App = () => {
       <FavoritesList />
       <RecommendationsList />
       
+      <Route path="/edit/:recipeId" element={<EditRecipeForm />} />
+
       <SearchBar />
       <Routes>
       <Route path="/" element={<RecipeList />} />
