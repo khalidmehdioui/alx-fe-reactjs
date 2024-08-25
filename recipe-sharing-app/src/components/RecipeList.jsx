@@ -1,34 +1,22 @@
-// src/components/RecipeList.jsx
-import React, { useEffect } from 'react';
-import { useRecipeStore } from '../recipeStore';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
-import SearchBar from './SearchBar';
+import React from 'react';
+import useRecipeStore from './recipeStore';
+import { Link } from 'react-router-dom';
 
 const RecipeList = () => {
-  const recipes = useRecipeStore(state => state.filteredRecipes);
-  const filterRecipes = useRecipeStore(state => state.filterRecipes);
-
-  useEffect(() => {
-    filterRecipes();
-  }, [filterRecipes]);
+  const filteredRecipes = useRecipeStore(state => state.filteredRecipes);
 
   return (
     <div>
-      <SearchBar />
-      <div>
-        {recipes.length > 0 ? (
-          recipes.map(recipe => (
-            <div key={recipe.id}>
-              <h3>{recipe.title}</h3>
-              <p>{recipe.description}</p>
-              <Link to={`/recipe/${recipe.id}`}>View Details</Link>
-              {/* Add a link to view the recipe details */}
-            </div>
-          ))
-        ) : (
-          <p>No recipes found</p>
-        )}
-      </div>
+      {filteredRecipes.length === 0 ? (
+        <p>No recipes found</p>
+      ) : (
+        filteredRecipes.map(recipe => (
+          <div key={recipe.id}>
+            <h3>{recipe.title}</h3>
+            <p>{recipe.description}</p>
+          </div>
+        ))
+      )}
     </div>
   );
 };
