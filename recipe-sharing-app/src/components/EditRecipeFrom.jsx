@@ -17,14 +17,14 @@ const EditRecipeForm = ({ recipe }) => {
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="العنوان"
+        placeholder="Title"
       />
       <textarea
         value={description}
         onChange={(e) => setDescription(e.target.value)}
-        placeholder="الوصف"
+        placeholder="Description"
       />
-      <button type="submit">تحديث الوصفة</button>
+      <button type="submit">Update Recipe</button>
     </form>
   );
 };
