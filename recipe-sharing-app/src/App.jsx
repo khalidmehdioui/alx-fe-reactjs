@@ -6,6 +6,7 @@ import RecipeDetails from './components/RecipeDetails';
 import EditRecipeForm from './components/EditRecipeForm';
 import FavoritesList from './components/FavoritesList';
 import RecommendationsList from './components/RecommendationsList';
+import Home from './Home'; // Assuming you have a Home component
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
           <Route path="/editrecipefrom" element={<EditRecipeForm />} />
           <Route path="/favorites" element={<FavoritesList />} />
           <Route path="/recommendations" element={<RecommendationsList />} />
+           <Route path="/" element={<Home />} />
+        <Route path="/recipe/:id" element={<RecipeDetails />} />
         </Routes>
       </div>
     </Router>
