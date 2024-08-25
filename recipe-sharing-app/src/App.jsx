@@ -1,36 +1,40 @@
-import React from 'react';
-import SearchBar from './components/SearchBar';
-import RecipeList from './components/RecipeList';
-import FavoritesList from './components/FavoritesList';
-import RecommendationsList from './components/RecommendationsList';
-import { Link, Route, Routes, Router } from 'react-router-dom';
-import AddRecipeForm from './components/AddRecipeForm';
+import { useState } from 'react';
+import { useParams, useHistory } from 'react-router-dom';
+import { useRecipeStore } from '../recipeStore';
 
-const App = () => {
+const EditRecipeForm = () => {
+  const { id } = useParams();
+  const history = useHistory();
+  const recipe = useRecipeStore((state) => state.getRecipeById(parseInt(id)));
+  const updateRecipe = useRecipeStore((state) => state.updateRecipe);
+
+  const [title, setTitle] = useState(recipe?.title || '');
+  const [description, setDescription] = useState(recipe?.description || '');
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    updateRecipe({ id: recipe.id, title, description });
+    history.push(`/recipe/${recipe.id}`);
+  };
+
   return (
-    <div>
-      <header>
-        <nav>
-          <Link to = "/">Home</Link>
-          <Link to = "/add-recipe">Add Recipe</Link>
-        </nav>
-      </header>
-      <main>
-      <h1>Recipe Sharing App</h1>
-      <RecipeList />
-      <FavoritesList />
-      <RecommendationsList />
-      
-      <SearchBar />
-      <Routes>
-      <Route path="/" element={<RecipeList />} />
-          <Route path="/recipe/:recipeId" element={<RecipeDetails />} />
-          <Route path="/add-recipe" element={<AddRecipeForm />} />
-        </Routes>
-      </main>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Title"
+        required
+      />
+      <textarea
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        placeholder="Description"
+        required
+      />
+      <button type="submit">Save Changes</button>
+    </form>
   );
 };
 
-export default App;
-
+export default EditRecipeForm;
