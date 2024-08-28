@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+// src/components/EditRecipeForm.jsx
+import { useState } from 'react';
 import useRecipeStore from './recipeStore';
 
-const EditRecipeForm = ({ recipe }) => {
-  const updateRecipe = useRecipeStore(state => state.updateRecipe);
+const EditRecipeForm = ({ recipeId }) => {
+  const recipe = useRecipeStore((state) =>
+    state.recipes.find((recipe) => recipe.id === recipeId)
+  );
+  const updateRecipe = useRecipeStore((state) => state.updateRecipe);
   const [title, setTitle] = useState(recipe.title);
   const [description, setDescription] = useState(recipe.description);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    updateRecipe({ ...recipe, title, description });
+    updateRecipe({ id: recipeId, title, description });
   };
 
   return (
@@ -30,4 +34,3 @@ const EditRecipeForm = ({ recipe }) => {
 };
 
 export default EditRecipeForm;
-
