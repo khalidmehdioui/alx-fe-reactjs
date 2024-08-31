@@ -1,69 +1,79 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+
+
 
 const RegistrationForm = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+    const [formData, setFormData] = useState({ username: '', email: '' , password: ''});
+    const { username, email, password } = formData;
+    const [errors, setErrors] = useState({});
 
-  const [errors, setErrors] = useState({});
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prevState => ({ ...prevState, [name]: value }));
+        setErrors({});
+    };
 
-  const handleUsernameChange = (e) => setUsername(e.target.value);
-  const handleEmailChange = (e) => setEmail(e.target.value);
-  const handlePasswordChange = (e) => setPassword(e.target.value);
+//----------------------- Validation function---------------
+    const validate = () => {
+        let tempErrors = {};
+        if (!username) tempErrors.username = "Username is required";
+        if (!email) tempErrors.email = "Email is required";
+        if (!password) tempErrors.password = "Password is required";
 
-  const validate = () => {
-    const newErrors = {};
-    if (!username) newErrors.username = 'Username is required';
-    if (!email) newErrors.email = 'Email is required';
-    if (!password) newErrors.password = 'Password is required';
-    return newErrors;
-  };
+        setErrors(tempErrors);
+        return Object.keys(tempErrors).length === 0;
+    };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-    } else {
-      console.log('Form submitted successfully', { username, email, password });
-    }
-  };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (validate()) {
+            console.log("Form Submitted Successfully", formData);
+            // Clear form after submission if needed
+            setFormData({ username: '', email: '', password: '' });
+            setErrors({});
+        }
+      }
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Username:</label>
-        <input
-          type="text"
-          name="username"
-          value={username}
-          onChange={handleUsernameChange}
-        />
-        {errors.username && <p>{errors.username}</p>}
-      </div>
-      <div>
-        <label>Email:</label>
-        <input
-          type="email"
-          name="email"
-          value={email} 
-          onChange={handleEmailChange}
-        />
-        {errors.email && <p>{errors.email}</p>}
-      </div>
-      <div>
-        <label>Password:</label>
-        <input
-          type="password"
-          name="password"
-          value={password}
-          onChange={handlePasswordChange}
-        />
-        {errors.password && <p>{errors.password}</p>}
-      </div>
-      <button type="submit">Register</button>
-    </form>
-  );
+    
+
+    return (
+        <form onSubmit={handleSubmit}>
+          <div>
+            <input
+                type="text"
+                name="username"
+                value={username}
+                onChange={handleChange}
+                placeholder='username'
+                
+            />
+            {errors.username && <span style={{ color: 'red' }}>{errors.username}</span>}
+          </div>
+          <div>
+            <input
+                type="email"
+                name="email"
+                value={email}
+                onChange={handleChange}
+                required
+                placeholder='Email'
+            />
+            {errors.email && <span style={{ color: 'red' }}>{errors.email}</span>}
+          </div>
+          <div>
+            <input
+                type="password"
+                name="password"
+                value={password}
+                onChange={handleChange}
+                required
+                placeholder='password'
+            />
+            {errors.password && <span style={{ color: 'red' }}>{errors.password}</span>}
+          </div>
+            <button type="submit">Submit</button>
+        </form>
+    );
 };
 
-export default RegistrationForm;
+export default RegistrationForm ;
