@@ -1,11 +1,20 @@
+// src/App.jsx
+import React from 'react';
 import Search from './components/Search';
+import Home from './components/Home';
 
 const App = () => {
   return (
-    <div>
-      <h1>GitHub User Search</h1>
-      <Search />
-    </div>
+    <Router>
+      <div>
+        <header>
+          <h1>GitHub User Search</h1>
+        </header>
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </div>
+    </Router>
   );
 };
 
