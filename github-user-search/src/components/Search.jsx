@@ -1,90 +1,91 @@
 import React, { useState } from 'react';
-import { fetchUserData } from '../services/githubService';
+import { fetchUserData } from '../services/githubService'; // Adjust import based on your actual function
 
 const Search = () => {
   const [username, setUsername] = useState('');
   const [location, setLocation] = useState('');
-  const [repos, setRepos] = useState('');
-  const [users, setUsers] = useState([]);
+  const [minRepos, setMinRepos] = useState('');
+  const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(null);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setUsers([]);
+  // Handle input change for all fields
+  const handleInputChange = (e) => {
+    setUsername (e.target.value);
+  };
+
+  // Handle form submission
+  const handleFormSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
+    setLoading(true); // Set loading state to true
+    setError(null); // Clear any previous error
 
     try {
-      const response = await fetchUserData(username, location, repos);
-      setUsers(response.data.items);
+      // Fetch advanced user data based on the input criteria
+      const data = await fetchAdvancedUserData(username, location, minRepos);
+      setUserData(data.items); // GitHub Search API returns results under 'items'
     } catch (err) {
-      setError("Looks like we can't find any users matching your criteria.");
+      setError("Looks like we cant find the user "); // Set error message
+      setUserData([]); // Clear user data on error
     } finally {
-      setLoading(false);
+      setLoading(false); // Set loading state to false
     }
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold text-center mb-8">GitHub Advanced User Search</h1>
-      <form className="max-w-xl mx-auto space-y-4" onSubmit={handleSearch}>
-        <div>
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <div>
-          <input
-            type="text"
-            placeholder="Location"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <div>
-          <input
-            type="number"
-            placeholder="Minimum Repositories"
-            value={repos}
-            onChange={(e) => setRepos(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
+    <div className="p-4">
+      <form onSubmit={handleFormSubmit} className="space-y-4">
+        <input
+          type="text"
+          name="username"
+          value={username}
+          onChange={handleInputChange}
+          placeholder="Search GitHub username"
+          className="border p-2 w-full"
+        />
+        <input
+          type="text"
+          name="location"
+          value={location}
+          onChange={handleInputChange}
+          placeholder="Location (optional)"
+          className="border p-2 w-full"
+        />
+        <input
+          type="number"
+          name="minRepos"
+          value={minRepos}
+          onChange={handleInputChange}
+          placeholder="Minimum Repositories (optional)"
+          className="border p-2 w-full"
+        />
+        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
           Search
         </button>
       </form>
 
-      {loading && <p className="text-center mt-4">Loading...</p>}
-      {error && <p className="text-center mt-4 text-red-500">{error}</p>}
-
-      <div className="mt-8">
-        {users.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {users.map((user) => (
-              <div key={user.id} className="bg-white p-4 rounded-md shadow-md">
-                <img src={user.avatar_url} alt={user.login} className="w-16 h-16 rounded-full mx-auto" />
-                <h3 className="text-lg text-center font-semibold">{user.login}</h3>
-                {user.location && <p className="text-center text-gray-600">{user.location}</p>}
-                <a
-                  href={user.html_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-center text-blue-500 mt-2"
-                >
-                  View Profile
-                </a>
-              </div>
+      {loading && <p>Loading...</p>}
+      {error && <p>{error}</p>}
+      {userData.length > 0 && (
+        <div className="mt-4">
+          <h3 className="font-bold">Search Results:</h3>
+          <ul className="space-y-4">
+            {userData.map((user) => (
+              <li key={user.id} className="border p-4 rounded">
+                <img src={user.avatar_url} alt="User Avatar" width="50" className="inline-block" />
+                <div className="inline-block ml-4">
+                  <h4 className="font-bold">{user.login}</h4>
+                  {user.location && <p>Location: {user.location}</p>}
+                  <p>Repositories: {user.public_repos}</p>
+                  <a href={user.html_url} target="_blank" rel="noopener noreferrer" className="text-blue-600">
+                    View GitHub Profile
+                  </a>
+                </div>
+              </li>
             ))}
-          </div>
-        )}
-      </div>
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
